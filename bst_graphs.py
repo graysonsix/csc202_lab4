@@ -11,6 +11,34 @@ from bst import *
 sys.setrecursionlimit(10**6)
 
 
+class BST:
+    def __init__(self, comes_before=lambda a, b: a < b):
+        self.function = comes_before
+        self.root = None
+
+    def insert(self, value):
+        def helper(tree, value):
+            if tree is None:
+                return Node(value, None, None)
+            if self.function(value, tree.value):
+                return Node(tree.value, helper(tree.left, value), tree.right)
+            else:
+                return Node(tree.value, tree.left, helper(tree.right, value))
+        self.root = helper(self.root, value)
+
+    def lookup(self, value):
+        def helper(tree, value):
+            if tree is None:
+                return False
+            if not self.function(value, tree.value) and not self.function(tree.value, value):
+                return True
+            if self.function(value, tree.value):
+                return helper(tree.left, value)
+            else:
+                return helper(tree.right, value)
+        return helper(self.root, value)
+
+
 def height(node):
     if node is None:
         return -1
